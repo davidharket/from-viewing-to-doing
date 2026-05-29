@@ -20,27 +20,48 @@ A live, randomised field experiment in the onboarding flow of an AI video
 platform. New users were allocated server-side to one of two conditions:
 
 - **Avatar** — onboarding video presented by a visible synthetic presenter.
-- **Control (non-avatar)** — the *same* video with the avatar removed: identical
-  script, audio, screen demonstration, runtime, call to action, and destination.
+- **Control / matched non-avatar** — the *same* onboarding video with the avatar
+  removed: identical script, audio, screen demonstration, runtime, call to
+  action, and destination.
 
-First-party telemetry measured viewing behaviour (watch-depth thresholds and the
-maximum observed playback position) and **creation initiation** (starting the
-video-creation flow). Generated-video completion is reported only as a downstream,
-paywall-constrained boundary check. The headline result is a separation between
-*viewing* and *doing*: avatar onboarding is associated with more viewing, but the
-evidence for increased task initiation is weak and the design is underpowered.
+First-party telemetry measured two outcome layers:
+
+1. **Observed playback progression** — watch-depth thresholds and maximum
+   observed playback position.
+2. **Instructed task completion** — primarily pressing **Create video**, with a
+   consolidated task-entry trigger retained as a lower-intent routing check.
+
+Generated-video render completion is reported only as a downstream boundary check
+because it depends on payment/access state, rendering conditions, and follow-up
+time beyond the onboarding intervention itself.
+
+The headline result is suggestive but inconclusive. Overall watch depth was
+broadly similar across conditions. The avatar condition showed a higher
+full-video completion rate and a descriptively higher Create-video press rate,
+but neither hypothesis was statistically supported and the design is underpowered
+for modest behavioural effects.
 
 ### Study snapshot (real data)
 
-| | |
-| --- | --- |
-| Consent-valid analysed episodes | 164 (80 avatar, 84 control) |
+| Item | Value |
+| --- | ---: |
+| Consent-valid analysed episodes | 164 first eligible onboarding episodes |
+| Avatar condition | 80 episodes |
+| Matched non-avatar condition | 84 episodes |
 | Assignment window | 2026-05-06 to 2026-05-19 |
-| Primary endpoint | creation-flow start (`video_create_started`) |
-| Approx. 80%-power MDE for creation start | ~18.9 percentage points |
+| Design | Server-side hash-randomised intention-to-treat field experiment |
+| Primary instructed-task endpoint | Create-video press |
+| Lower-intent task check | Consolidated task-entry trigger |
+| Full-video completion | 20.0% avatar vs. 13.1% matched non-avatar |
+| Create-video press | 31.2% avatar vs. 23.8% matched non-avatar |
+| Create-video press difference | +7.4 percentage points |
+| 95% CI for Create-video press difference | −6.2 to 21.1 percentage points |
+| Approx. 80%-power MDE for Create-video press | ~18.9 percentage points |
 
 These numbers are reproduced by the code in this repository when run against the
-real export; they are quoted here only for orientation.
+real export. They are quoted here only for orientation. The bundled synthetic
+sample is random, non-personal, and intended only to demonstrate that the
+pipeline runs end-to-end.
 
 ## Repository layout
 
@@ -95,17 +116,23 @@ produced.
 
 ## Data and GDPR
 
-The real dataset is **not** included and will not be published. It is first-party
-behavioural telemetry that, although pseudonymised, is personal data under the
-GDPR; participants consented to the platform's privacy policy for service
-operation, not to public release of event-level records. Releasing the analysis
-code without the data is a deliberate balance between reproducibility and data
-protection.
+The real dataset is **not** included and will not be published. It consists of
+first-party behavioural telemetry from a live product. Although direct
+identifiers are excluded from the thesis export, the event-level records remain
+pseudonymised personal data under the GDPR.
 
-See [`data/README.md`](data/README.md) for the required filenames and
-[`docs/data_dictionary.md`](docs/data_dictionary.md) for the full schema (column
-names and types only). Access to the underlying data for verification can be
-requested from the author under a controlled-access agreement.
+The thesis analysis uses a smaller consent-valid first-party export. A larger
+operational export was excluded because explicit analytics-consent status could
+not be verified for a substantial portion of records and because the same export
+contained internal testing and bot traffic.
+
+This repository therefore publishes the analysis code, schema documentation, and
+a fully synthetic sample with the same expected structure, but not the real
+event-level telemetry. See [`data/README.md`](data/README.md) for the required
+filenames and [`docs/data_dictionary.md`](docs/data_dictionary.md) for the full
+schema (column names and types only). Access to the underlying data for
+verification can be requested from the author under an appropriate
+controlled-access agreement.
 
 ## Environment
 
@@ -117,8 +144,9 @@ Tested with Python 3.9.6, pandas 2.3.3, numpy 2.0.2, scipy 1.13.1. See
 If you use this code, please cite the thesis and this repository:
 
 > Harket, D. (2026). *Replication code for "From Viewing to Doing? A Randomised
-> Evaluation of Avatar-Led Onboarding in an AI Video Platform"* (v1.0).
-> GitHub. https://github.com/davidharket/from-viewing-to-doing
+> Evaluation of Avatar-Led Onboarding in an AI Video Platform"* (Version
+> v1.0-thesis-submission) [Computer software]. GitHub.
+> https://github.com/davidharket/from-viewing-to-doing
 
 See [`CITATION.cff`](CITATION.cff) for machine-readable metadata.
 
